@@ -72,10 +72,10 @@ class Application_ui(Frame):
         self.Command1.place(relx=0.381, rely=0.288, relwidth=0.25, relheight=0.185)
 
         self.Text2 = Entry(self.top)
-        self.Text2.place(relx=0.764, rely=0.324, relwidth=0.07, relheight=0.117)
+        self.Text2.place(relx=0.658, rely=0.324, relwidth=0.07, relheight=0.117)
 
         self.Text3 = Entry(self.top)
-        self.Text3.place(relx=0.658, rely=0.324, relwidth=0.07, relheight=0.117)
+        self.Text3.place(relx=0.764, rely=0.324, relwidth=0.07, relheight=0.117)
 
         self.Text4 = Entry(self.top)
         self.Text4.place(relx=0.857, rely=0.324, relwidth=0.07, relheight=0.113)
@@ -129,6 +129,7 @@ class Application(Application_ui):
 
     def start_with_s(self, s=0):
         self.current_time = s
+        print(self.current_time)
         for times in range(self.long - s):
             if not self.Subtitle:
                 break
@@ -139,7 +140,6 @@ class Application(Application_ui):
             self.SLabel.update()
             time.sleep(round(1 / self.current_speed, 1))
             self.current_time += 1
-            print(self.time_sub_sequence[self.current_time])
 
     def draw_subtitle(self, i=0):
         if not self.Subtitle:
@@ -208,6 +208,7 @@ class Application(Application_ui):
             second = int(self.Text4.get()) if self.Text4.get() else 0
         except ValueError:
             t_value = False
+        print(t_value)
         if t_value and not self.Subtitle:
             self.draw_subtitle(hour + minute + second)
 
