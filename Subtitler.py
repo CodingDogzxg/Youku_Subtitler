@@ -164,7 +164,7 @@ class Application(Application_ui):
 
     def dump_subtitle(self):
         try:
-            with open("{}".format(self.Text1.get()), 'r') as file:
+            with open("{}".format(self.Text1.get()), 'r', encoding='gbk') as file:
                 a = file.readlines()
                 print(a)
                 for line in a:
