@@ -11,6 +11,7 @@ class CreatSubtitile(Frame):
         self.master = Toplevel()
         self.master.grid()
         self.master.geometry("800x50")
+        self.master.attributes('-topmost', 1)
         self.createWindgets()
         self.flag = True
         # self.transparent = False
@@ -129,10 +130,6 @@ class Application(Application_ui):
                 if not line.isdigit():
                     temp.append(line)
                 elif line.isdigit() and temp:
-                    # if int(temp[0].split(" --> ")[1].replace(":", "").split(",")[0]) > s_t:
-                    #     time.sleep(int(temp[0].split(" --> ")[1].replace(":", "").split(",")[0]) - s_t)
-                    #     s_t += int(temp[0].split(" --> ")[1].replace(":", "").split(",")[0])
-
                     t = temp[0].split(' --> ')
                     t_start, t_end = t[0].split(',')[0].split(':'), t[1].split(',')[0].split(':')
                     t_start_s = int(t_start[0]) * 3600 + int(t_start[1]) * 60 + int(t_start[2])
@@ -140,14 +137,21 @@ class Application(Application_ui):
 
                     if t_start_s > s_t:
                         time.sleep(t_start_s - s_t)
-                        s_t += t_start_s - s_t
+                        # a1 = time.time()
+                        # while time.time() - a1 < t_start_s - s_t:
+                        #     pass
+                        s_t = t_start_s
 
                     self.SLabel['text'] = '{}'.format(temp[1:])
                     self.SLabel.update()
                     print(temp[1:])
-                    # time.sleep(int(temp[0].split(" --> ")[1].replace(":", "").split(",")[0]) - int(temp[0].split(" --> ")[0].replace(":", "").split(",")[0]))
 
                     time.sleep(t_end_s - t_start_s)
+                    # a2 = time.time()
+                    # while time.time() - a2 < t_end_s - t_start_s:
+                    #     pass
+
+                    s_t += t_end_s - t_start_s
                     temp = []
 
             self.subtitle.master.mainloop()
