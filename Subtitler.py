@@ -38,7 +38,7 @@ class Application_ui(Frame):
     # 这个类仅实现界面生成功能，具体事件处理代码在子类Application中。
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.master.title('Youku Subtitler v0.1')
+        self.master.title('Youku Subtitler v0.2')
         self.master.geometry('420x222')
         self.master.resizable(0,0)
         self.createWidgets()
@@ -46,7 +46,7 @@ class Application_ui(Frame):
     def createWidgets(self):
         self.top = self.winfo_toplevel()
 
-        self.Text1Var = StringVar(value='文件名字  例子：test.srt 文件放到本目录下')
+        self.Text1Var = StringVar(value='subtitle.srt') # 文件名字  例子：test.srt 文件放到本目录下
         self.Text1 = Entry(self.top, fg='#FF0000', textvariable=self.Text1Var)
         self.Text1.place(relx=0.038, rely=0.108, relwidth=0.8, relheight=0.113)
 
@@ -62,40 +62,49 @@ class Application_ui(Frame):
         self.Command2 = Button(self.top, text='关闭字幕', command=self.close_subtitle)
         self.Command2.place(relx=0.057, rely=0.541, relwidth=0.25, relheight=0.185)
 
-        self.Command1 = Button(self.top, text='前一句')
+        self.Command1 = Button(self.top, text='前一秒', command=self.back_onesec)
         self.Command1.place(relx=0.381, rely=0.541, relwidth=0.25, relheight=0.185)
 
-        self.Command1 = Button(self.top, text='后一句')
+        self.Command1 = Button(self.top, text='后一秒', command=self.forward_onesec)
         self.Command1.place(relx=0.705, rely=0.541, relwidth=0.25, relheight=0.185)
 
-        self.Command1 = Button(self.top, text='从指定位置成字幕')
+        self.Command1 = Button(self.top, text='从指定位置成字幕', command=self.manual_start)
         self.Command1.place(relx=0.381, rely=0.288, relwidth=0.25, relheight=0.185)
 
-        self.Text2Var = StringVar(value='')
-        self.Text2 = Entry(self.top, textvariable=self.Text2Var)
-        self.Text2.place(relx=0.724, rely=0.324, relwidth=0.098, relheight=0.117)
+        self.Text2 = Entry(self.top)
+        self.Text2.place(relx=0.764, rely=0.324, relwidth=0.07, relheight=0.117)
 
-        self.Text3Var = StringVar(value='')
-        self.Text3 = Entry(self.top, textvariable=self.Text3Var)
-        self.Text3.place(relx=0.857, rely=0.324, relwidth=0.098, relheight=0.113)
+        self.Text3 = Entry(self.top)
+        self.Text3.place(relx=0.658, rely=0.324, relwidth=0.07, relheight=0.117)
 
-        self.Label2 = Label(self.top, text='：')
-        self.Label2.place(relx=0.819, rely=0.324, relwidth=0.04, relheight=0.113)
+        self.Text4 = Entry(self.top)
+        self.Text4.place(relx=0.857, rely=0.324, relwidth=0.07, relheight=0.113)
 
-        self.Command3 = Button(self.top, text='倍速设置', command=self.Command3_Cmd)
+        self.Command3 = Button(self.top, text='倍速设置', command=self.speed_change)
         self.Command3.place(relx=0.057, rely=0.793, relwidth=0.25, relheight=0.185)
 
-        self.Label3 = Label(self.top, text='支持1 1.25 1.5 2倍速', fg='#8080FF')
+        self.Label3 = Label(self.top, text='支持1 1.25 2倍速', fg='#8080FF')
         self.Label3.place(relx=0.324, rely=0.829, relwidth=0.307, relheight=0.077)
 
         self.Label4 = Label(self.top, text='现在是1倍速', fg='#FF8000')
         self.Label4.place(relx=0.324, rely=0.901, relwidth=0.307, relheight=0.077)
 
-        self.Label5 = Label(self.top, text='分')
-        self.Label5.place(relx=0.724, rely=0.24, relwidth=0.079, relheight=0.077)
+        self.Label8 = Label(self.top, text='：')
+        self.Label8.place(relx=0.741, rely=0.324, relwidth=0.023, relheight=0.113)
 
-        self.Label6 = Label(self.top, text='秒')
-        self.Label6.place(relx=0.857, rely=0.24, relwidth=0.098, relheight=0.077)
+        self.Label2 = Label(self.top, text='：')
+        self.Label2.place(relx=0.834, rely=0.324, relwidth=0.023, relheight=0.113)
+
+        self.Label5 = Label(self.top, text='时')
+        self.Label5.place(relx=0.658, rely=0.24, relwidth=0.098, relheight=0.077)
+
+        self.Label6 = Label(self.top, text='分')
+        self.Label6.place(relx=0.764, rely=0.24, relwidth=0.098, relheight=0.077)
+
+        self.Label7 = Label(self.top, text='秒')
+        self.Label7.place(relx=0.857, rely=0.24, relwidth=0.098, relheight=0.077)
+
+
 
         self.Command4 = Button(self.top, text='反馈bug', command=self.Command4_Cmd)
         self.Command4.place(relx=0.705, rely=0.793, relwidth=0.25, relheight=0.185)
@@ -106,14 +115,33 @@ class Application(Application_ui):
     def __init__(self, master=None):
         Application_ui.__init__(self, master)
         self.Subtitle = False
-        self.time_list = []
-        self.subtitle_list = []
-        self.b = []
+
+        self.time_sub_sequence = {}
+
+        self.dump_list = []
+
+        self.speed_list = [1, 1.25, 2]
+        self.current_speed = 1
+        self.speed_flag = 0
 
     def callback(self):
         pass
 
-    def draw_subtitle(self):
+    def start_with_s(self, s=0):
+        self.current_time = s
+        for times in range(self.long - s):
+            if not self.Subtitle:
+                break
+            c_subtitle = ''
+            for ele in self.time_sub_sequence[self.current_time]:
+                c_subtitle += ele
+            self.SLabel['text'] = c_subtitle
+            self.SLabel.update()
+            time.sleep(round(1 / self.current_speed, 1))
+            self.current_time += 1
+            print(self.time_sub_sequence[self.current_time])
+
+    def draw_subtitle(self, i=0):
         if not self.Subtitle:
             self.Subtitle = True
             self.subtitle = CreatSubtitile()
@@ -124,43 +152,17 @@ class Application(Application_ui):
             self.SLabel = Label(self.subtitle.master, text='')
             self.SLabel.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.5)
 
-            temp = []
-            s_t = 0
-            for line in self.b:
-                if not line.isdigit():
-                    temp.append(line)
-                elif line.isdigit() and temp:
-                    t = temp[0].split(' --> ')
-                    t_start, t_end = t[0].split(',')[0].split(':'), t[1].split(',')[0].split(':')
-                    t_start_s = int(t_start[0]) * 3600 + int(t_start[1]) * 60 + int(t_start[2])
-                    t_end_s = int(t_end[0]) * 3600 + int(t_end[1]) * 60 + int(t_end[2])
+            self.start_with_s(i)
 
-                    if t_start_s > s_t:
-                        time.sleep(t_start_s - s_t)
-                        # a1 = time.time()
-                        # while time.time() - a1 < t_start_s - s_t:
-                        #     pass
-                        s_t = t_start_s
-
-                    self.SLabel['text'] = '{}'.format(temp[1:])
-                    self.SLabel.update()
-                    print(temp[1:])
-
-                    time.sleep(t_end_s - t_start_s)
-                    # a2 = time.time()
-                    # while time.time() - a2 < t_end_s - t_start_s:
-                    #     pass
-
-                    s_t += t_end_s - t_start_s
-                    temp = []
-
-            self.subtitle.master.mainloop()
+            if self.Subtitle:
+                self.subtitle.master.mainloop()
 
     def close_subtitle(self):
         if self.Subtitle:
             self.subtitle.master.destroy()
             self.subtitle = None
             self.Subtitle = False
+
 
     def dump_subtitle(self):
         try:
@@ -170,18 +172,63 @@ class Application(Application_ui):
                 for line in a:
                     strip_line = line.strip("\n")
                     if strip_line:
-                        self.b.append(strip_line)
-                print(self.b)
+                        self.dump_list.append(strip_line)
+                print(self.dump_list)
         except FileNotFoundError:
             pass
 
+        for line in self.dump_list[::-1]:
+            if not '-->' in line:
+                continue
+            t_long = [int(x) for x in (line.split(' --> ')[1].split(',')[0].split(':'))]
+            self.long = t_long[0] * 3600 + t_long[1] * 60 + t_long[2]
+            for i in range(self.long):
+                self.time_sub_sequence[i] = ''
+            break
 
-    def Command3_Cmd(self, event=None):
-        print(self.subtitle.master)
+        temp = []
+        for line in self.dump_list:
+            if not line.isdigit():
+                temp.append(line)
+            elif line.isdigit() and temp:
+                t = temp[0].split(' --> ')
+                t_start, t_end = [int(x) for x in (t[0].split(',')[0].split(':'))], [int(y) for y in (t[1].split(',')[0].split(':'))]
+                t_start_s = t_start[0] * 3600 + t_start[1] * 60 + t_start[2]
+                t_end_s = t_end[0] * 3600 + t_end[1] * 60 + t_end[2]
+                for t in range(t_start_s, t_end_s + 1):
+                    self.time_sub_sequence[t] = temp[1:]
+                temp = []
+        print(self.time_sub_sequence)
+
+    def manual_start(self):
+        t_value = True
+        try:
+            hour = int(self.Text2.get()) * 3600 if self.Text2.get() else 0
+            minute = int(self.Text3.get()) * 60 if self.Text3.get() else 0
+            second = int(self.Text4.get()) if self.Text4.get() else 0
+        except ValueError:
+            t_value = False
+        if t_value and not self.Subtitle:
+            self.draw_subtitle(hour + minute + second)
+
+
+    def speed_change(self):
+        self.speed_flag += 1
+        self.current_speed = self.speed_list[self.speed_flag % len(self.speed_list)]
+        self.Label4['text'] = '现在是{}倍速'.format(self.speed_list[self.speed_flag % len(self.speed_list)])
+        self.Label4.update()
+
+    def back_onesec(self):
+        if self.Subtitle:
+            self.current_time -= 1
+
+    def forward_onesec(self):
+        if self.Subtitle:
+            self.current_time += 1
 
     def Command4_Cmd(self, event=None):
-        #TODO, Please finish the function here!
-        pass
+        from webbrowser import open_new
+        open_new("mailto:codingdogzxg@gmail.com")
 
 
 
