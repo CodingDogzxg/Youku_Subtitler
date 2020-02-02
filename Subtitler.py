@@ -135,7 +135,7 @@ class Application(Application_ui):
                 break
             c_subtitle = ''
             for ele in self.time_sub_sequence[self.current_time]:
-                c_subtitle += ele
+                c_subtitle += ele + ''
             self.SLabel['text'] = c_subtitle
             self.SLabel.update()
             time.sleep(round(1 / self.current_speed, 1))
