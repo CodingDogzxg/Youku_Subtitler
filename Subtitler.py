@@ -11,6 +11,7 @@ class CreatSubtitile(Frame):
         self.master = Toplevel()
         self.master.grid()
         self.master.geometry("800x50")
+        self.master.resizable(0, 0)
         self.master.attributes('-topmost', 1)
         self.createWindgets()
         self.flag = True
@@ -40,7 +41,7 @@ class Application_ui(Frame):
         Frame.__init__(self, master)
         self.master.title('Youku Subtitler v0.2')
         self.master.geometry('420x222')
-        self.master.resizable(0,0)
+        self.master.resizable(0, 0)
         self.createWidgets()
 
     def createWidgets(self):
@@ -104,9 +105,7 @@ class Application_ui(Frame):
         self.Label7 = Label(self.top, text='秒')
         self.Label7.place(relx=0.857, rely=0.24, relwidth=0.098, relheight=0.077)
 
-
-
-        self.Command4 = Button(self.top, text='反馈bug', command=self.Command4_Cmd)
+        self.Command4 = Button(self.top, text='反馈bug', command=self.report_bug)
         self.Command4.place(relx=0.705, rely=0.793, relwidth=0.25, relheight=0.185)
 
 
@@ -163,7 +162,6 @@ class Application(Application_ui):
             self.subtitle = None
             self.Subtitle = False
 
-
     def dump_subtitle(self):
         try:
             with open("{}".format(self.Text1.get()), 'r', encoding='gbk') as file:
@@ -212,7 +210,6 @@ class Application(Application_ui):
         if t_value and not self.Subtitle:
             self.draw_subtitle(hour + minute + second)
 
-
     def speed_change(self):
         self.speed_flag += 1
         self.current_speed = self.speed_list[self.speed_flag % len(self.speed_list)]
@@ -227,10 +224,9 @@ class Application(Application_ui):
         if self.Subtitle:
             self.current_time += 1
 
-    def Command4_Cmd(self, event=None):
+    def report_bug(self):
         from webbrowser import open_new
         open_new("mailto:codingdogzxg@gmail.com")
-
 
 
 if __name__ == "__main__":
