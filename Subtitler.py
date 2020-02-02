@@ -47,7 +47,7 @@ class Application_ui(Frame):
     def createWidgets(self):
         self.top = self.winfo_toplevel()
 
-        self.Text1Var = StringVar(value='subtitle.srt') # 文件名字  例子：test.srt 文件放到本目录下
+        self.Text1Var = StringVar(value='subtitle.srt')  # 文件名字  例子：test.srt 文件放到本目录下
         self.Text1 = Entry(self.top, fg='#FF0000', textvariable=self.Text1Var)
         self.Text1.place(relx=0.038, rely=0.108, relwidth=0.8, relheight=0.113)
 
@@ -69,7 +69,7 @@ class Application_ui(Frame):
         self.Command1 = Button(self.top, text='后一秒', command=self.forward_onesec)
         self.Command1.place(relx=0.705, rely=0.541, relwidth=0.25, relheight=0.185)
 
-        self.Command1 = Button(self.top, text='从指定位置成字幕', command=self.manual_start)
+        self.Command1 = Button(self.top, text='从指定时间成字幕', command=self.manual_start)
         self.Command1.place(relx=0.381, rely=0.288, relwidth=0.25, relheight=0.185)
 
         self.Text2 = Entry(self.top)
