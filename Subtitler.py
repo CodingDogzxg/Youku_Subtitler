@@ -23,13 +23,13 @@ class CreatSubtitile(Frame):
         self.top.overrideredirect(self.flag)
         self.flag ^= True
         if not self.flag:
-            self.lock_img = PhotoImage(file='lock.png')
+            self.lock_img = PhotoImage(file='./lock.png')
             self.flagButton['image'] = self.lock_img
         else:
             self.flagButton['image'] = self.unlock_img
 
     def createWindgets(self):
-        self.unlock_img = PhotoImage(file='unlock.png')
+        self.unlock_img = PhotoImage(file='./unlock.png')
         self.flagButton = Button(self.master, image=self.unlock_img, bg='black', command=self.overturn)
 
         self.flagButton.place(relx=0.03, rely=0.03, relwidth=0.02, relheight=0.3)
@@ -137,6 +137,8 @@ class Application(Application_ui):
                 c_subtitle += ele + ''
             self.SLabel['text'] = c_subtitle
             self.SLabel.update()
+            self.CTLabel['text'] = '当前时间：%02d:%02d:%02d'%(self.current_time//3600, self.current_time//60%60, self.current_time%60)
+            self.CTLabel.update()
             time.sleep(round(1 / self.current_speed, 1))
             self.current_time += 1
 
@@ -149,7 +151,10 @@ class Application(Application_ui):
             self.subtitle.master.protocol("WM_DELETE_WINDOW", self.callback)
 
             self.SLabel = Label(self.subtitle.master, text='')
-            self.SLabel.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.5)
+            self.SLabel.place(relx=0.1, rely=0.2, relwidth=0.8, relheight=0.5)
+
+            self.CTLabel = Label(self.subtitle.master, text='当前时间：')
+            self.CTLabel.place(relx=0, rely=0.34, relwidth=0.15, relheight=0.3)
 
             self.start_with_s(i)
 
@@ -164,7 +169,7 @@ class Application(Application_ui):
 
     def dump_subtitle(self):
         try:
-            with open("{}".format(self.Text1.get()), 'r', encoding='gbk') as file:
+            with open("./{}".format(self.Text1.get()), 'r', encoding='gbk') as file:
                 a = file.readlines()
                 print(a)
                 for line in a:
